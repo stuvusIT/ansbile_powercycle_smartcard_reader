@@ -1,0 +1,10 @@
+---
+- name: Reload systemd configuration
+  service:
+    daemon_reload: True
+
+- name: Restart detectErrorAndPowercycle service
+  service:
+    name: detectErrorAndPowercycle
+    enabled: true
+    state: restarted

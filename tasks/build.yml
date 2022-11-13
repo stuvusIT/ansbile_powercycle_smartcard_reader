@@ -1,0 +1,51 @@
+---
+- name: Install build dependecies
+  apt:
+    name:
+      - build-essential
+      - automake
+
+- name: Link correct version number of automake
+  file:
+    path: /usr/bin/automake-1.13
+    state: link
+    src: /usr/bin/automake
+
+- name: Link correct version number of and aclocal
+  file:
+    path: /usr/bin/aclocal-1.13
+    state: link
+    src: /usr/bin/aclocal
+
+- name: Check if source of the desired hubpower version exists
+  stat:
+    path: "/opt/hubpower-{{ powercycle_smartcard_reader_hubpower_revision }}"
+  register: hubpower_source_stat
+
+- name: Download hubpower archive
+  get_url:
+    url: "{{ powercycle_smartcard_reader_hubpower_archive_url | default('https://github.com/' + powercycle_smartcard_reader_hubpower_github_repo + '/archive/' + powercycle_smartcard_reader_hubpower_revision + '.tar.gz') }}"
+    dest: "{{ global_cache_dir }}/hubpower-{{ powercycle_smartcard_reader_hubpower_revision }}.tar.gz"
+    checksum: "{{ powercycle_smartcard_reader_hubpower_checksum }}"
+  become: False
+  delegate_to: localhost
+  when: not hubpower_source_stat.stat.exists
+
+- name: Create unarchive target directory
+  file:
+    path: "/opt/hubpower-{{ powercycle_smartcard_reader_hubpower_revision }}"
+    state: directory
+  when: not hubpower_source_stat.stat.exists
+
+- name: Unpack hubpower archive
+  unarchive:
+    src: "{{ global_cache_dir }}/hubpower-{{ powercycle_smartcard_reader_hubpower_revision }}.tar.gz"
+    dest: "/opt/hubpower-{{ powercycle_smartcard_reader_hubpower_revision }}/"
+    extra_opts:
+      - --strip-components=1
+  when: not hubpower_source_stat.stat.exists
+
+- name: Compile hubpower
+  shell: ./configure && make
+  args:
+    chdir: "/opt/hubpower-{{ powercycle_smartcard_reader_hubpower_revision }}"

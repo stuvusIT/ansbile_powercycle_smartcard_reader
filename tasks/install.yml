@@ -1,0 +1,14 @@
+---
+- name: Check if binary of the desired hubpower version exists
+  stat:
+    path: /opt/hubpower-{{ powercycle_smartcard_reader_hubpower_revision }}/src/hubpower
+  register: hubpower_executable_stat
+
+- include_tasks: build.yml
+  when: not hubpower_executable_stat.stat.exists
+
+- name: Install hubpower
+  file:
+    path: /usr/local/bin/hubpower
+    state: link
+    src: /opt/hubpower-{{ powercycle_smartcard_reader_hubpower_revision }}/src/hubpower

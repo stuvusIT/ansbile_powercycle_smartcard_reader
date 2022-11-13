@@ -1,2 +1,32 @@
 ---
+- include_tasks: install.yml
 
+- name: Place powercycleReader script
+  template:
+    dest: /usr/local/bin/powercycleReader
+    src: powercycleReader.sh
+    owner: root
+    mode: "0755"
+
+- name: Place detectErrorAndPowercycle script
+  template:
+    dest: /usr/local/bin/detectErrorAndPowercycleReader
+    src: detectErrorAndPowercycleReader.sh
+    owner: root
+    mode: "0755"
+
+- name: Create detectErrorAndPowercycle service
+  template:
+    src: detectErrorAndPowercycle.service.j2
+    dest: /etc/systemd/system/detectErrorAndPowercycle.service
+  notify:
+    - Reload systemd configuration
+    - Restart detectErrorAndPowercycle service
+
+- meta: flush_handlers
+
+- name: Enable detectErrorAndPowercycle service
+  service:
+    name: detectErrorAndPowercycle
+    enabled: True
+    state: started
