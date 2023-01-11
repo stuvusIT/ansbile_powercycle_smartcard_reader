@@ -1,0 +1,11 @@
+# {{ ansible_managed }}
+[Unit]
+Description=detectErrorAndPowercycleReader
+
+[Service]
+Restart=always
+RestartSec=10
+ExecStart=/usr/local/bin/detectErrorAndPowercycleReader
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,9 @@
+---
+powercycle_smartcard_reader_hubpower_github_repo: grandrew/hubpower
+powercycle_smartcard_reader_hubpower_revision: f9573cd767cd5b10a7f9276aad398aa455f44d44
+powercycle_smartcard_reader_hubpower_checksum: sha256:00ef5ee389181723e14cf0c98b68fd2f59d14709740f0c818588614ea97f8588
+
+powercycle_smartcard_reader_log_message_pattern: "pcscd.*Error communicating to"
+powercycle_smartcard_reader_busnum: 1
+powercycle_smartcard_reader_devnum: 2
+powercycle_smartcard_reader_portnum: 4
